@@ -2,11 +2,11 @@ cwlVersion: v1.0
 class: Workflow
 
 inputs:
-  cell_model: Any
-  compound_library: Any
-  assay_parameters: Any
-  staining_protocol: Any
-  imaging_parameters: Any
+  cell_model: Record
+  compound_library: Record
+  assay_parameters: Record
+  staining_protocol: Record
+  imaging_parameters: Record
 
 steps:
   - id: assay_design
