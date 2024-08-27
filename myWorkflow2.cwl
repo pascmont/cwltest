@@ -178,4 +178,6 @@ steps:
     out: [final_report]
 
 outputs:
-  final_report: reporting/final_report
+  final_report:
+    type: File
+    outputSource: reporting/final_report
