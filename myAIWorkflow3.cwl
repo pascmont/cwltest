@@ -47,7 +47,10 @@ steps:
           type: File
           outputBinding:
             glob: objectives.json
-      doc: "Step for processing experiment objectives."
+    in:
+      input_file: text_view
+    out:
+      - objectives
 
   sop_references:
     run:
@@ -64,7 +67,10 @@ steps:
           type: File
           outputBinding:
             glob: sop_data.json
-      doc: "Step for reading SOP references from Excel."
+    in:
+      input_file: sop_references
+    out:
+      - sop_data
 
   parameters_store:
     run:
@@ -81,7 +87,10 @@ steps:
           type: File
           outputBinding:
             glob: parameters.csv
-      doc: "Step for reading parameters from CSV."
+    in:
+      input_file: parameters_store
+    out:
+      - parameters
 
   doe_screening:
     run:
@@ -98,7 +107,11 @@ steps:
           type: File
           outputBinding:
             glob: design.json
-      doc: "Step for generating experimental design."
+    in:
+      sop_data: sop_references/sop_data
+      parameters: parameters_store/parameters
+    out:
+      - design
 
   create_experiments:
     run:
@@ -113,7 +126,10 @@ steps:
           type: File
           outputBinding:
             glob: experiment_details.json
-      doc: "Step for creating experiment details from design."
+    in:
+      design: doe_screening/design
+    out:
+      - experiment_details
 
   cultures_layout:
     run:
@@ -128,7 +144,10 @@ steps:
           type: File
           outputBinding:
             glob: culture_layout.json
-      doc: "Step for laying out cultures based on design."
+    in:
+      design: doe_screening/design
+    out:
+      - culture_layout
 
   plate_mapping:
     run:
@@ -143,7 +162,10 @@ steps:
           type: File
           outputBinding:
             glob: plate_mapping_data.json
-      doc: "Step for mapping experimental conditions to plates."
+    in:
+      layout: cultures_layout/culture_layout
+    out:
+      - plate_mapping_data
 
   register_samples:
     run:
@@ -158,4 +180,7 @@ steps:
           type: File
           outputBinding:
             glob: experiment_setup.json
-      doc: "Final step for registering samples and producing the setup file."
+    in:
+      plate_mapping: plate_mapping/plate_mapping_data
+    out:
+      - experiment_setup
