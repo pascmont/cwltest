@@ -25,7 +25,7 @@ outputs:
 
 steps:
   text_view:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, text_view_script.py]
@@ -39,9 +39,13 @@ steps:
           type: File
           outputBinding:
             glob: objectives.json
+    in:
+      input_file: text_view
+    out:
+      - objectives
 
   sop_references:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, excel_reader_script.py]
@@ -55,9 +59,13 @@ steps:
           type: File
           outputBinding:
             glob: sop_data.json
+    in:
+      input_file: sop_references
+    out:
+      - sop_data
 
   parameters_store:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, csv_reader_script.py]
@@ -71,9 +79,13 @@ steps:
           type: File
           outputBinding:
             glob: parameters.csv
+    in:
+      input_file: parameters_store
+    out:
+      - parameters
 
   doe_screening:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, doe_screening_script.py]
@@ -87,9 +99,14 @@ steps:
           type: File
           outputBinding:
             glob: design.json
+    in:
+      sop_data: sop_references/sop_data
+      parameters: parameters_store/parameters
+    out:
+      - design
 
   create_experiments:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, joiner_script.py]
@@ -101,9 +118,13 @@ steps:
           type: File
           outputBinding:
             glob: experiment_details.json
+    in:
+      design: doe_screening/design
+    out:
+      - experiment_details
 
   cultures_layout:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, layout_script.py]
@@ -115,9 +136,13 @@ steps:
           type: File
           outputBinding:
             glob: culture_layout.json
+    in:
+      design: doe_screening/design
+    out:
+      - culture_layout
 
   plate_mapping:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, plate_mapping_script.py]
@@ -129,9 +154,13 @@ steps:
           type: File
           outputBinding:
             glob: plate_mapping_data.json
+    in:
+      layout: cultures_layout/culture_layout
+    out:
+      - plate_mapping_data
 
   register_samples:
-    run: 
+    run:
       cwlVersion: v1.2
       class: CommandLineTool
       baseCommand: [python, register_samples_script.py]
@@ -143,60 +172,6 @@ steps:
           type: File
           outputBinding:
             glob: experiment_setup.json
-
-# Links between steps
-  text_view:
-    run: text_view_script.py
-    in:
-      input_file: text_view
-    out:
-      - objectives
-
-  sop_references:
-    run: excel_reader_script.py
-    in:
-      input_file: sop_references
-    out:
-      - sop_data
-
-  parameters_store:
-    run: csv_reader_script.py
-    in:
-      input_file: parameters_store
-    out:
-      - parameters
-
-  doe_screening:
-    run: doe_screening_script.py
-    in:
-      sop_data: sop_references/sop_data
-      parameters: parameters_store/parameters
-    out:
-      - design
-
-  create_experiments:
-    run: joiner_script.py
-    in:
-      design: doe_screening/design
-    out:
-      - experiment_details
-
-  cultures_layout:
-    run: layout_script.py
-    in:
-      design: doe_screening/design
-    out:
-      - culture_layout
-
-  plate_mapping:
-    run: plate_mapping_script.py
-    in:
-      layout: cultures_layout/culture_layout
-    out:
-      - plate_mapping_data
-
-  register_samples:
-    run: register_samples_script.py
     in:
       plate_mapping: plate_mapping/plate_mapping_data
     out:
