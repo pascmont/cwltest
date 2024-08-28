@@ -4,12 +4,12 @@ class: Workflow
 inputs:
   sop_references:
     type: File
-    format: edam:format_3752
+    #format: edam:format_3752
     doc: "Excel file containing SOP references"
 
   parameters_store:
     type: File
-    format: edam:format_3750
+    #format: edam:format_3750
     doc: "CSV file containing experimental parameters"
 
 outputs:
